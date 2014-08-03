@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Countdown Timer</title>
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+    <link id="link" type="text/css" href="app.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div id="container">
+      <header>
+        <div id="title"><h1>Countdown Timer</h1></div>
+      </header>
+
+      <div id="message"><h3>click to edit numbers</h3></div>
+
+      <!--Timer-->
+      <div id="timer">
+        <div id="timer_min" class="timer_num">00</div>
+        <div class="timer_text">min</div>
+        <div id="timer_sec" class="timer_num">00</div>
+        <div class="timer_text">sec</div>
+      </div>
+
+      <!--Error message field-->
+      <div id="error" hidden></div>
+
+      <!--Button-->
+      <div id="control">
+        <div id="start" class="button">Start</div>
+        <div id="reset" class="button">Reset</div>
+      </div>
+
+      <!--log form-->
+      <div id="log" hidden>
+        <p>
+            Counted 
+                <span id="log_min" class="log_num">00</span> min 
+                <span id="log_sec" class="log_num">00</span> sec
+              <br>
+            Started at 
+                <span id="log_start"></span>
+              <br>
+            Ended at
+                <span id="log_end"></span>
+        </p>
+      </div>
+
+      <footer id="footer">
+        <p>
+          &copy; kosamari
+        </p>
+      </footer>
+    </div>
+  </body>
+</html>
