@@ -1,0 +1,12 @@
+{
+  "name": "GetAverageColor",
+  "description": "script to get average color of an image",
+  "version": "0.0.1",
+  "author": {
+    "name": "Mariko Kosaka"
+  },
+  "dependencies": {
+    "phantom"  : "*",
+    "prompt"  : "*"
+  }
+}
