@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Markdown List</title>
+    <script src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/styles/default.min.css">
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/highlight.js/8.1/highlight.min.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+    <link id="link" type="text/css" href="app.css" rel="stylesheet" />
+  </head>
+
+  <body>
+      <header>
+        <div id="title"><h1>Gist List</h1></div>
+      </header>
+      <div id="FileSelector">
+        <p>
+          Select File : 
+          <input class="button" id="pl-file" type="file" />
+        </p>
+      </div>
+
+      <div id="container"></div>
+
+      <footer id="footer">
+        <p>
+          &copy; kosamari
+        </p>
+      </footer>
+
+    <script type="text/template" id="gistBlock-template">
+      <div class="gistBlock" id="<%= id %>">
+        <div class="gistTitle" >
+          <div class="description">
+            <span class="<%= status %> status"><b><%= status %></b></span><%= description %>
+          </div>
+        </div>
+        <div class="gistCodeblock" hidden>
+        </div>
+      </div>
+    </script>
+    <script type="text/template" id="gistCodeblock-template">
+        <div class="file">
+          <div class="filetitle">File Name : <%= filename %></div>
+          <div class="filetitle">Language : <%= language %></div>
+          <div class="code"><pre><%= content %></pre></div>
+        </div>
+    </script>
+
+  </body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "name": "Gists_List",
+  "description": "Simple Gists list to share",
+  "version": "0.0.1",
+  "author": {
+    "name": "Mariko Kosaka"
+  },
+  "dependencies": {
+    "underscore": "*"
+  }
+}

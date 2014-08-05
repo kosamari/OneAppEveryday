@@ -1,0 +1,48 @@
+*{
+  font-family:'Lucida Grande', sans-serif;
+}
+.gistBlock{
+  width: 740px;
+  margin-top:10px;
+  display: block;
+}
+.gistTitle{
+  width:100%;
+  padding:10px;
+  display: block;
+  background-color: #666;
+  color: #fff;
+  font-size: 16px;
+  border-radius: 5px;
+}
+.gistCodeblock{
+  width:100%;
+  padding:10px;
+  background-color: #999;
+}
+.file{
+  background-color: #fff;
+  margin-bottom: 10px; 
+  padding:15px;
+}
+.filetitle{
+  float:left;
+  width:320px;
+  border-bottom:1px solid #999;
+  padding-left:10px;
+  margin-bottom: 15px;
+}
+.code{
+  clear:both;
+}
+.status{
+  margin-right:10px;
+  font-size: 10px;
+  text-transform:uppercase;
+}
+.private{
+  color:#FBB05E;
+}
+.public{
+  color:#0AA699;
+}
