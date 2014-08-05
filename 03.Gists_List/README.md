@@ -9,12 +9,12 @@ Simply open index.html and select gist.txt (sample file). You'll see you can sha
 
 
 To make your own list, create another JSON with following format  
-    {
-    "title": "Title of the list",
-    "gists": [
-        {
-          "path":"gist id here" (ex: https://gist.github.com/kosamari/0aab88eec02d64339ed6 -> id is '0aab88eec02d64339ed6')
-        },
-        ...
-      ]
-    }
+    {  
+    "title": "Title of the list",  
+    "gists": [  
+        {  
+          "path":"gist id here" (ex: https://gist.github.com/kosamari/0aab88eec02d64339ed6 -> id is '0aab88eec02d64339ed6')  
+        },  
+        ...  
+      ]  
+    }  
