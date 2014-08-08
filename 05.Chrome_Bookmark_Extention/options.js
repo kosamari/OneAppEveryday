@@ -14,5 +14,6 @@ document.getElementById('tag').onblur = function(){
   var array = string.split(',')
   localStorage.keys = JSON.stringify(array);
   }
+  chrome.extension.getBackgroundPage().tagsUpdate()
   document.getElementById('display').innerHTML = string;
 };

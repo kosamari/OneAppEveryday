@@ -49,19 +49,25 @@ function serchInFolder(id, callback){
   });
 }
 
-tagsUpdate();
-
 function tagsUpdate(){
   var keys = JSON.parse(localStorage.keys)
   var tags = JSON.parse(localStorage.tags)
 
-  tags.forEach(function(tag){
-    console.log(tag)
+  keys.forEach(function(key){
+    
   })
-  // if(!localStogage.keys){callback(result); return;}
-  //get localStogage.keys as list, for each get localStorage.tags and get id as list
-  // array of array 集合値だけ残して他を削除する
-  //if all false add localStorage.flag = true;
+
+  tags.forEach(function(tag){
+    tag.tag.forEach(function(keyword, i){
+      var match = keys.indexOf(keyword);
+      if(match<=0){
+        
+        tag.tag.splice(i, 1)
+
+      }
+    })
+  })
+  localStorage.tags = JSON.stringify(tags)
 }
 
 function createFolder(callback){
