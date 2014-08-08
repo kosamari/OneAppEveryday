@@ -1,6 +1,6 @@
 // chrome.browserAction.setBadgeText({"text":'NEW'});
 // window.addEventListener('DOMContentLoaded', checkFolder());
-var extFolder = 'Extension!';
+var extFolder = 'Snnipets';
 var extParentFolder = 'Bookmarks Bar';
 
 var defaultsites = ['http://codepen.io/', 'https://gist.github.com/', 'http://jsfiddle.net/'];

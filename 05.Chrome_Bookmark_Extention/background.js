@@ -1,14 +1,14 @@
 // chrome.browserAction.setBadgeText({"text":'NEW'});
 // window.addEventListener('DOMContentLoaded', checkFolder());
-var extFolder = 'Extensiorrrrrn!';
+var extFolder = 'Bookmark Extention';
 var extParentFolder = 'Bookmarks Bar';
 var iconOn = 'img/19_b.png';
 var iconOff = 'img/19_nb.png';
 
 
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
-  isBookmarked(tab.url,function(e){
-    if(e){iconSwitch('on')}else{iconSwitch('off')}
+  isBookmarked(tab.url,function(state){
+    state ? iconSwitch('on') : iconSwitch('off')
   })
 });
 
@@ -30,11 +30,8 @@ function isBookmarked(url,callback){
     })
     var index = bookmarks.indexOf(url);
     var id = bookmarksId[index];
-    if(index>=0){
-      return callback(id);
-    }else{
-      return callback(false);
-    }
+    index>=0 ? callback(id) : callback(false);
+    
   })
 }
 
@@ -52,19 +49,10 @@ function serchInFolder(id, callback){
 function tagsUpdate(){
   var keys = JSON.parse(localStorage.keys)
   var tags = JSON.parse(localStorage.tags)
-
-  keys.forEach(function(key){
-    
-  })
-
   tags.forEach(function(tag){
     tag.tag.forEach(function(keyword, i){
       var match = keys.indexOf(keyword);
-      if(match<=0){
-        
-        tag.tag.splice(i, 1)
-
-      }
+      if(match<=0) { tag.tag.splice(i, 1) }
     })
   })
   localStorage.tags = JSON.stringify(tags)
