@@ -4,7 +4,6 @@ window.addEventListener('DOMContentLoaded', bookmark());
 function bookmark(){
   chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
     bgr.isBookmarked(tabs[0].url, function(id){
-      bgr.console.log(id)
       if(id){
         showtags(id);
         $('#tags').append('<br><input type="button" name="save" value="remove bookmark" id="save"/>');
@@ -23,12 +22,12 @@ function showtags(id){
   var tags = JSON.parse(localStorage.tags)
   
   tags.forEach(function(tag,i){
-    var key = Object.keys(tag)[0]
+    var key = tag.id
     if(key===id){
-      bgr.console.log(tag[key])
-      if(tag[key].length > 0){
+      
+      if(tag.tag.length > 0){
         var keys = JSON.parse(localStorage.keys)
-        var tags = tag[key]
+        var tags = tag.tag
         var match = [];
 
         keys.forEach(function(key,i){
@@ -44,7 +43,7 @@ function showtags(id){
             $('#tags').append('<label><input id="'+key+'" type="checkbox" checked/>'+key+'</label>')
             $('#'+key).click(function(){updateTagStatus(id,key,document.getElementById(key).checked)})
           }else{
-            $('#tags').append('<label><input id="'+key+'" type="checkbox" checked/>'+key+'</label>')
+            $('#tags').append('<label><input id="'+key+'" type="checkbox"/>'+key+'</label>')
             $('#'+key).click(function(){updateTagStatus(id,key,document.getElementById(key).checked)})
           }
         });
@@ -76,15 +75,15 @@ function updateTagStatus(id,tagname,state){
     tags = JSON.parse(localStorage.tags);
   
   tags.forEach(function(tag){
-    var key = Object.keys(tag)[0];
+    var key = tag.id;
     if(key===id){
-      bgr.console.log(tagname)
-      var index = tag[key].indexOf(tagname)
+
+      var index = tag.tag.indexOf(tagname)
       if(index >=0){
-        if(!state){tag[key].splice(index, 1)}
+        if(!state){tag.tag.splice(index, 1)}
         return;
       }else{
-        if(state){tag[key].push(tagname)}
+        if(state){tag.tag.push(tagname)}
       }
     }
   })
@@ -95,14 +94,12 @@ function updateTagStatus(id,tagname,state){
 
 
 function removeBookmark(id){
-  bgr.console.log(id)
-  bgr.console.log('del')
     chrome.bookmarks.remove(id, function(){
         bgr.iconSwitch('off');
         var tags = JSON.parse(localStorage.tags);
         
         tags.forEach(function(tag,i){
-          var key = Object.keys(tag)[0];
+          var key = tag.id;
           if(key===id){
             tags.splice(i, 1)
           }
@@ -116,11 +113,11 @@ function addBookmark(tabTitle,tabUrl){
   chrome.bookmarks.create({title:tabTitle,parentId:localStorage.folderId,url:tabUrl},function(newbookmark){
     if(localStorage.tags){
       var tags = JSON.parse(localStorage.tags);
-      var obj = JSON.parse('{"'+newbookmark.id+'":[]}');
+      var obj = { id:newbookmark.id, tag:[]};
       tags.push(obj);
       localStorage.tags = JSON.stringify(tags);
     }else{
-      localStorage.tags = '[{"'+newbookmark.id+'":[]}]'
+      localStorage.tags = '[{ "id" :"'+newbookmark.id+'", "tag":[]}]'
     }
     showtags(newbookmark.id)
     bgr.iconSwitch('on');

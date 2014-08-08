@@ -43,14 +43,25 @@ function serchInFolder(id, callback){
     if(typeof(result) === 'undefined'){
       createFolder(function(){serchInFolder(localStorage.folderId,callback)});
     }else{
-      // if(!localStogage.keys){callback(result); return;}
-      //get localStogage.keys as list, for each get localStorage.tags and get id as list
-      // array of array 集合値だけ残して他を削除する
-      //if all false add localStorage.flag = true;
       callback(result);
       return;
     }
   });
+}
+
+tagsUpdate();
+
+function tagsUpdate(){
+  var keys = JSON.parse(localStorage.keys)
+  var tags = JSON.parse(localStorage.tags)
+
+  tags.forEach(function(tag){
+    console.log(tag)
+  })
+  // if(!localStogage.keys){callback(result); return;}
+  //get localStogage.keys as list, for each get localStorage.tags and get id as list
+  // array of array 集合値だけ残して他を削除する
+  //if all false add localStorage.flag = true;
 }
 
 function createFolder(callback){
