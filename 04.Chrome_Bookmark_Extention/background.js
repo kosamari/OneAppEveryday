@@ -1,5 +1,5 @@
 // chrome.browserAction.setBadgeText({"text":'NEW'});
-
+// window.addEventListener('DOMContentLoaded', checkFolder());
 var extFolder = 'Extension!';
 var extParentFolder = 'Bookmarks Bar';
 
@@ -15,7 +15,7 @@ var reg = new RegExp(sites.toString().split(',').join('|').split('/').join('\\/'
 chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
   if (tab.url && reg.test(tab.url)) {
     isBookmarked(tab.url,function(e){
-      iconSwitch('on',tabId)
+      if(e){ iconSwitch('on',tabId)}
     })
     chrome.pageAction.show(tabId);
   }
@@ -27,9 +27,9 @@ chrome.pageAction.onClicked.addListener(function(){
 
 localStorage.folderId ? serchInFolder(localStorage.folderId, function(){}) : createFolder(function(){});
 function iconSwitch(s,tabId){
+  console.log('called')
   if(s==='on'){chrome.pageAction.setIcon({tabId: tabId, path: iconOn})}
   else{chrome.pageAction.setIcon({tabId: tabId, path: iconOff})}
-  
 }
 function isBookmarked(url,callback){
 
