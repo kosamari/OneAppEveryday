@@ -1,5 +1,4 @@
-// chrome.browserAction.setBadgeText({"text":'NEW'});
-// window.addEventListener('DOMContentLoaded', checkFolder());
+  // chrome.browserAction.setBadgeText({"text":'NEW'});
 var extFolder = 'Bookmark Extention';
 var extParentFolder = 'Bookmarks Bar';
 var iconOn = 'img/19_b.png';
@@ -12,9 +11,9 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
   })
 });
 
-// chrome.tabs.create({url: "options.html"});
 localStorage.folderId ? null : createFolder(function(){});
 localStorage.keys ? null : localStorage.keys = '[]';
+localStorage.tags ? null : localStorage.tags = '[]';
 tagsUpdate()
 
 function iconSwitch(s){
@@ -79,6 +78,7 @@ function createFolder(callback){
 }
 
 function updateTagStatus(id,tagname,state){
+  console.log(id+tagname+state)
   if(localStorage.tags){
     var tags = JSON.parse(localStorage.tags);
     tags.forEach(function(tagObj){
