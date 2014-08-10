@@ -15,6 +15,7 @@ chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 // chrome.tabs.create({url: "options.html"});
 localStorage.folderId ? null : createFolder(function(){});
 localStorage.keys ? null : localStorage.keys = '[]';
+tagsUpdate()
 
 function iconSwitch(s){
   if(s==='on'){chrome.browserAction.setIcon({path: iconOn})}

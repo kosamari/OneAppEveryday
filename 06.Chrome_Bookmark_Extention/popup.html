@@ -6,10 +6,39 @@
     #tags{
       width:200px;
     }
+    body {
+      font-family:sans-serif;
+    }
+    input#del {
+      padding: 3px;
+      background-color: #666;
+      border-radius:4px;
+      color: #fff;
+      border-style: none;
+      clear:right;
+      display:block;
+      float: right;
+    }
+    .tagbutton {
+      margin:2px 3px 2px 0px;
+      background-color:#EFEFEF;
+      border-radius:4px;
+      overflow:auto;
+      float:left;
+    }
+    .tagbutton label span {
+      text-align:center;
+      padding:3px;
+      font-size: 12px;
+      display:block;
+    }
+    .tagbutton input:checked + span {
+      background-color:#006DB8;
+      color:#fff;
+    }
     </style>
     <body>
-      <div id="tags">
-      </div>
+      <div id="tags"></div>
     </body>
     <footer>
         <script type="text/javascript" src="popup.js"></script>

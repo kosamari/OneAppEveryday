@@ -7,10 +7,7 @@ function bookmark(){
     bgr.isBookmarked(tabs[0].url, function(id){
       if(id){
         showtags(id);
-          tagarea.insertAdjacentHTML('beforeend','<br><input type="button" name="save" value="remove bookmark" id="save"/>')
-          document.getElementById('save').addEventListener('click' , function(){ 
-            removeBookmark(id);
-          })
+          
       }else{
         addBookmark(tabs[0].title,tabs[0].url,id);
       }
@@ -53,6 +50,10 @@ function showtags(id){
       }
     }
   });
+  tagarea.insertAdjacentHTML('beforeend','<div><input type="button" name="save" value="remove" id="del"/></div>')
+          document.getElementById('del').addEventListener('click' , function(){ 
+            removeBookmark(id);
+          })
 }
 
 function createTags(key, id, state){
@@ -67,7 +68,7 @@ function createTags(key, id, state){
       tagarea.insertAdjacentHTML('beforeend',this.taghtml)
       document.getElementById(key).addEventListener('click' ,function(){bgr.updateTagStatus(id,key,document.getElementById(key).checked)})
     },
-    taghtml : '<div class="ck-button"><label><input id="'+key+'" type="checkbox" hidden/><span>'+key+'</span></label></div>'
+    taghtml : '<div class="tagbutton"><label><input id="'+key+'" type="checkbox" hidden/><span>'+key+'</span></label></div>'
 
   };
   state==='on' ? set[state](key,id) : set[state](key,id) ;
