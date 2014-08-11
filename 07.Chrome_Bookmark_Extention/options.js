@@ -21,42 +21,45 @@ document.addEventListener("DOMContentLoaded", function(event) {
     }
   });
 
-  chrome.extension.getBackgroundPage().serchInFolder(localStorage.folderId,function(result){
-    renderListContainer('no-tags')
-    noTagList.forEach(function(id){
-      result[0].children.forEach(function(bookmark){
-        if(bookmark.id === id){
-          var li = document.createElement("li");
-          var a = document.createElement("a");
-          a.href=bookmark.url;
-          a.target='_blank'
-          li.innerHTML=bookmark.title;
-          a.appendChild(li)
-          document.getElementById('no-tags-list').appendChild(a);
+  chrome.bookmarks.getSubTree(localStorage.folderId, function (result){
+    if(typeof(result) === 'undefined'){
+      alert('can\'t find bookmarks')
+    }else{
+      renderListContainer('no-tags')
+      noTagList.forEach(function(id){
+        result[0].children.forEach(function(bookmark){
+          if(bookmark.id === id){
+            var li = document.createElement("li");
+            var a = document.createElement("a");
+            a.href=bookmark.url;
+            a.target='_blank'
+            li.innerHTML=bookmark.title;
+            a.appendChild(li)
+            document.getElementById('no-tags-list').appendChild(a);
+          }
+        })
+      })
+
+      keys.forEach(function(key,i){
+        renderListContainer(key)
+        if(keyList[i].length>0){
+          keyList[i].forEach(function(id){
+            result[0].children.forEach(function(bookmark){
+              if(bookmark.id === id){
+                var li = document.createElement("li");
+                var a = document.createElement("a");
+                a.href=bookmark.url;
+                a.target='_blank'
+                li.innerHTML=bookmark.title;
+                a.appendChild(li)
+                document.getElementById(key+'-list').appendChild(a);
+              }
+            })
+          })
         }
       })
-    })
-
-    keys.forEach(function(key,i){
-      renderListContainer(key)
-      if(keyList[i].length>0){
-        keyList[i].forEach(function(id){
-          result[0].children.forEach(function(bookmark){
-            if(bookmark.id === id){
-              var li = document.createElement("li");
-              var a = document.createElement("a");
-              a.href=bookmark.url;
-              a.target='_blank'
-              li.innerHTML=bookmark.title;
-              a.appendChild(li)
-              document.getElementById(key+'-list').appendChild(a);
-            }
-          })
-        })
-      }
-    })
-    
-  })
+    }
+  });
 });
 
 document.getElementById('input').onkeydown = function (ev) {
