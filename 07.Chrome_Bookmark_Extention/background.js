@@ -53,7 +53,7 @@ function tagsUpdate(){
   tags.forEach(function(tag){
     tag.tag.forEach(function(keyword, i){
       var match = keys.indexOf(keyword);
-      if(match<=0) { tag.tag.splice(i, 1) }
+      if(match<0) { tag.tag.splice(i, 1) }
     })
   })
   localStorage.tags = JSON.stringify(tags)
