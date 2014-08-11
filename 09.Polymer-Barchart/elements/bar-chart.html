@@ -1,0 +1,51 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<polymer-element name="bar-chart" attributes="data color">
+  <template>
+    <style>
+      #chart div {
+        font: 10px sans-serif;
+        background-color: {{color}};
+        text-align: right;
+        padding: 3px;
+        margin: 1px;
+        color: white;
+      }
+    </style>
+    <div id="chart"></div>
+  </template>
+
+  <script src="../bower_components/d3/d3.min.js"></script>
+  <script>
+  function barchart(element,data,color){
+
+    var data = JSON.parse(data)
+
+    var x = d3.scale.linear()
+      .domain([0, d3.max(data)])
+      .range([0, 420]);
+
+    while (element.firstChild) {
+      element.removeChild(element.firstChild);
+    }
+
+    d3.select(element)
+      .selectAll("div")
+        .data(data)
+      .enter().append("div")
+        .style("width", function(d) { return x(d) + "px"; })
+        .text(function(d) { return d; });
+  }
+
+  Polymer('bar-chart', {
+    data: null,
+    color: '#F88F1C',
+    observe:{
+      data :'draw'
+    },
+    draw: function(){
+      barchart(this.$.chart, this.data,this.color);
+    }
+  });
+  </script>
+</polymer-element>
