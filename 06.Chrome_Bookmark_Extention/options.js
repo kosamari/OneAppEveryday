@@ -1,67 +1,15 @@
 document.addEventListener("DOMContentLoaded", function(event) {
-  var keys = JSON.parse(localStorage.keys);
-  var tags = JSON.parse(localStorage.tags);
-  var keyList = [];
-  var noTagList = [];
-  keys.forEach(function(keyword,i){
-    renderTag(keyword)
-    keyList[i] = [];
-  });
-
-  tags.forEach(function(tagObj){
-    if(tagObj.tag.length===0){
-     noTagList.push(tagObj.id)
-   }else{
-      tagObj.tag.forEach(function(tagname){
-        var index = keys.indexOf(tagname);
-        if(index>=0){
-          keyList[index].push(tagObj.id)
-        }
+  if(localStorage.keys){
+    var keywords = JSON.parse(localStorage.keys);
+      keywords.forEach(function(keyword){
+        renderTag(keyword)
       });
-    }
-  });
-
-  chrome.extension.getBackgroundPage().serchInFolder(localStorage.folderId,function(result){
-    renderListContainer('no-tags')
-    noTagList.forEach(function(id){
-      result[0].children.forEach(function(bookmark){
-        if(bookmark.id === id){
-          var li = document.createElement("li");
-          var a = document.createElement("a");
-          a.href=bookmark.url;
-          a.target='_blank'
-          li.innerHTML=bookmark.title;
-          a.appendChild(li)
-          document.getElementById('no-tags-list').appendChild(a);
-        }
-      })
-    })
-
-    keys.forEach(function(key,i){
-      renderListContainer(key)
-      if(keyList[i].length>0){
-        keyList[i].forEach(function(id){
-          result[0].children.forEach(function(bookmark){
-            if(bookmark.id === id){
-              var li = document.createElement("li");
-              var a = document.createElement("a");
-              a.href=bookmark.url;
-              a.target='_blank'
-              li.innerHTML=bookmark.title;
-              a.appendChild(li)
-              document.getElementById(key+'-list').appendChild(a);
-            }
-          })
-        })
-      }
-    })
-    
-  })
+  }
 });
 
-document.getElementById('input').onkeydown = function (ev) {
-    ev.keyCode = ev.which || ev.keyCode;
-    if(ev.which == 13) {
+document.getElementById('input').onkeydown = function (e) {
+    e.keyCode = e.which || e.keyCode;
+    if(e.which == 13) {
       addTag();
     }
 }
@@ -70,12 +18,12 @@ document.getElementById('input').onblur = addTag;
 
 function addTag() { 
   clearMessage();
+
   var string = document.getElementById("input").value.split(' ').join('');
   document.getElementById("input").value = '';
   if(string===''){
     return;
   }else{
-
     function checkComma(){
       var reg = /,$/;
       if(reg.test(string)){string=string.slice(0, -1); checkComma()}
@@ -88,47 +36,32 @@ function addTag() {
     newkeywords.forEach(function(keyword){
       var exist = savedkeywords.indexOf(keyword);
       if(exist>=0){
-        addMessage(keyword)
+        var msg = document.createElement('p')
+        msg.innerHTML = 'tag "'+ keyword+'" is already registered.'
+        document.getElementById('message').appendChild(msg)
       }else{
         renderTag(keyword);
         savedkeywords.push(keyword)
-        renderListContainer(keyword)
       }
     })
     localStorage.keys = JSON.stringify(savedkeywords);
   }
 };
-
-function addMessage(keyword){
-  var msg = document.createElement('span');
-  msg.className='err';
-  msg.innerHTML = 'tag "'+ keyword+'" is already registered.'
-  document.getElementById('message').appendChild(msg)
-}
-
 function clearMessage(){
-  var el = document.getElementById("message");
-  while (el.firstChild) {
-    el.removeChild(el.firstChild);
+  var element = document.getElementById("message");
+  while (element.firstChild) {
+    element.removeChild(element.firstChild);
   }
 }
-
-function deleteTag(keyword, el){
+function deleteTag(keyword){
   clearMessage();
   var savedkeywords = JSON.parse(localStorage.keys);
   var index = savedkeywords.indexOf(keyword);
   savedkeywords.splice(index,1);
   localStorage.keys = JSON.stringify(savedkeywords)
-  
-    var container = document.getElementById(keyword+'-container');
-    container.parentNode.removeChild(container);
-    lastListNode = container;
-    lastTagNode = el.parentNode;
-    el.parentNode.remove(el.parentNode);
 }
 
-var lastTagNode;
-var lastListNode;
+var lastnode;
 
 function renderTag(keyword){
   var div = document.createElement("div");
@@ -138,44 +71,68 @@ function renderTag(keyword){
     span.className='del';
     span.innerHTML='x';
     span.addEventListener('click',function(){
-      deleteTag(this.parentNode.id, this)
+      deleteTag(this.parentNode.id)
+      lastnode = this.parentNode;
+      this.parentNode.remove(this.parentNode);
       undo();
     });
   div.appendChild(span)
   document.getElementById('tags').appendChild(div);
 }
 
-function renderListContainer(keyword){
-  var div = document.createElement("div");
-  div.id = keyword+'-container';
-  var span = document.createElement("span");
-  span.innerHTML = keyword
-  span.id = keyword+'-title';
-  var ul = document.createElement("ul");
-  ul.id = keyword+'-list';
-  div.appendChild(span)
-  div.appendChild(ul)
-  document.getElementById('list').appendChild(div);
-}
-
 function undo(){
   var span = document.createElement("span");
   span.innerHTML='undo';
-  span.className='undo';
   span.addEventListener('click',function(){
-    document.getElementById('tags').appendChild(lastTagNode);
-    document.getElementById('list').appendChild(lastListNode);
-    clearMessage();
-    var savedkeywords = JSON.parse(localStorage.keys);
-    savedkeywords.push(lastTagNode.id)
-    localStorage.keys = JSON.stringify(savedkeywords)
-    lastTagNode=null;
-    lastListNode=null;
-  });
+      document.getElementById('tags').appendChild(lastnode);
+      clearMessage();
+      var savedkeywords = JSON.parse(localStorage.keys);
+        savedkeywords.push(lastnode.id)
+        localStorage.keys = JSON.stringify(savedkeywords)
+    });
   document.getElementById('message').appendChild(span)
 }
 
+var keys = JSON.parse(localStorage.keys);
+
+var keyList = [];
+var tags = JSON.parse(localStorage.tags);
+var bookmarks;
+
+keys.forEach(function(key,i){
+  keyList[i] = [];
+})
+
+tags.forEach(function(tagObj){
+  tagObj.tag.forEach(function(tagname){
+    var index = keys.indexOf(tagname);
+    if(index>=0){
+      keyList[index].push(tagObj.id)
+    }
+  })
+})
 
 
-
-
+chrome.extension.getBackgroundPage().serchInFolder(localStorage.folderId,function(result){
+  bookmarks = result[0].children;
+  keys.forEach(function(key,i){
+    var div = document.createElement("div");
+    div.innerHTML = key
+    div.id = key+'-list';
+    document.getElementById('list').appendChild(div);
+    if(keyList[i].length>0){
+      keyList[i].forEach(function(id){
+        bookmarks.forEach(function(bookmark){
+          if(bookmark.id === id){
+            var li = document.createElement("li");
+            var a = document.createElement("a");
+            a.href=bookmark.url;
+            a.innerHTML=bookmark.title;
+            li.appendChild(a)
+            document.getElementById(key+'-list').appendChild(li);
+          }
+        })
+      })
+    }
+  })
+})

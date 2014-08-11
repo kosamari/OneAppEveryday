@@ -1,74 +1,77 @@
 var bgr = chrome.extension.getBackgroundPage();
-document.addEventListener("DOMContentLoaded", bookmark());
+window.addEventListener('DOMContentLoaded', bookmark());
+var tagarea = document.getElementById('tags');
 
 function bookmark(){
-  var tags = JSON.parse(localStorage.tags)
-  var keys = JSON.parse(localStorage.keys)
-
   chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
     bgr.isBookmarked(tabs[0].url, function(id){
       if(id){
-        tags.forEach(function(tagObj,i) {
-          if(tagObj.id===id){
-            if(tagObj.tag.length > 0){
-              var tags = tagObj.tag
-              var map = [];
-
-              keys.forEach(function(key){
-                tags.forEach(function(tag){
-                  if(key === tag ){map.push(tag)}
-                })
-              });
-
-              keys.forEach(function(key){
-                var index = map.indexOf(key);
-                if(index >= 0){
-                  renderTag(key, 'on');
-                }else{
-                  renderTag(key, 'off');
-                }
-              });
-
-            }else{
-              if(keys.length > 0){
-                keys.forEach(function(key) {
-                  renderTag(key,'off');
-                });
-              }
-            }
-          }
-        });
+        showtags(id);
+          
       }else{
         addBookmark(tabs[0].title,tabs[0].url,id);
-        keys.forEach(function(key) {
-          renderTag(key,'off');
-        });
       }
     });
   });
-
-  document.getElementById('remove').addEventListener('click' , function(){ 
-    chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
-      bgr.isBookmarked(tabs[0].url, function(id){
-        if(id){removeBookmark(id);}
-      });
-    });
-  })
-
 }
 
-function addBookmark(tabTitle,tabUrl){
-  chrome.bookmarks.create({title:tabTitle,parentId:localStorage.folderId,url:tabUrl},function(newbookmark){
-    bgr.iconSwitch('on');
-    if(localStorage.tags){
-      var tags = JSON.parse(localStorage.tags);
-      var obj = { id:newbookmark.id, tag:[]};
-      tags.push(obj);
-      localStorage.tags = JSON.stringify(tags);
-    }else{
-      localStorage.tags = '[{ "id" :"'+newbookmark.id+'", "tag":[]}]'
+function showtags(id){
+  var tags = JSON.parse(localStorage.tags)
+  var keys = JSON.parse(localStorage.keys)
+  tags.forEach(function(tagObj,i) {
+    if(tagObj.id===id){
+      if(tagObj.tag.length > 0){
+        var tags = tagObj.tag
+        var map = [];
+        keys.forEach(function(key){
+          tags.forEach(function(tag){
+            if(key === tag ){ map.push(tag)}
+          })
+        });
+
+        keys.forEach(function(key){
+          var index = map.indexOf(key);
+          if(index >= 0){
+            var state = function(){updateTagStatus(id,key,document.getElementById(key).checked)};
+            createTags(key, id, 'on');
+          }else{
+            createTags(key, id, 'off');
+          }
+        });
+
+      }else{
+        if(keys.length > 0){
+          keys.forEach(function(key) {
+            createTags(key, id, 'off');
+          });
+        }else{
+          tagarea.innerHTML = 'please set keys';
+        }
+      }
     }
   });
+  tagarea.insertAdjacentHTML('beforeend','<div><input type="button" name="save" value="remove" id="del"/></div>')
+          document.getElementById('del').addEventListener('click' , function(){ 
+            removeBookmark(id);
+          })
+}
+
+function createTags(key, id, state){
+  
+  var set = {
+    on: function(){
+      tagarea.insertAdjacentHTML('beforeend',this.taghtml);
+      document.getElementById(key).checked = true;
+      document.getElementById(key).addEventListener('click' ,function(){bgr.updateTagStatus(id,key,document.getElementById(key).checked)})
+    },
+    off : function(){
+      tagarea.insertAdjacentHTML('beforeend',this.taghtml)
+      document.getElementById(key).addEventListener('click' ,function(){bgr.updateTagStatus(id,key,document.getElementById(key).checked)})
+    },
+    taghtml : '<div class="tagbutton"><label><input id="'+key+'" type="checkbox" hidden/><span>'+key+'</span></label></div>'
+
+  };
+  state==='on' ? set[state](key,id) : set[state](key,id) ;
 }
 
 
@@ -87,82 +90,17 @@ function removeBookmark(id){
   })
 }
 
-
-document.getElementById('input').onkeydown = function (ev) {
-    ev.keyCode = ev.which || ev.keyCode;
-    if(ev.which == 13) {
-      addTag();
+function addBookmark(tabTitle,tabUrl){
+  chrome.bookmarks.create({title:tabTitle,parentId:localStorage.folderId,url:tabUrl},function(newbookmark){
+    bgr.iconSwitch('on');
+    if(localStorage.tags){
+      var tags = JSON.parse(localStorage.tags);
+      var obj = { id:newbookmark.id, tag:[]};
+      tags.push(obj);
+      localStorage.tags = JSON.stringify(tags);
+    }else{
+      localStorage.tags = '[{ "id" :"'+newbookmark.id+'", "tag":[]}]'
     }
-}
-
-document.getElementById('input').onblur = addTag;
-
-
-function addTag() {
-  clearMessage();
-  var string = document.getElementById("input").value.split(' ').join('');
-  document.getElementById("input").value = '';
-  if(string===''){
-    return;
-  }else{
-
-    function checkComma(){
-      var reg = /,$/;
-      if(reg.test(string)){string=string.slice(0, -1); checkComma()}
-    }
-    checkComma();
-
-    var newkeywords = string.split(',');
-    var savedkeywords = JSON.parse(localStorage.keys);
-    
-    newkeywords.forEach(function(keyword){
-      var exist = savedkeywords.indexOf(keyword);
-      if(exist>=0){
-        addMessage(keyword)
-      }else{
-        renderTag(keyword);
-        savedkeywords.push(keyword)
-      }
-    })
-    localStorage.keys = JSON.stringify(savedkeywords);
-  }
-};
-
-
-function addMessage(keyword){
-  var msg = document.createElement('span');
-  msg.className='err';
-  msg.innerHTML = 'tag "'+ keyword+'" is already registered.'
-  document.getElementById('message').appendChild(msg)
-}
-
-function clearMessage(){
-  var el = document.getElementById("message");
-  while (el.firstChild) {
-    el.removeChild(el.firstChild);
-  }
-}
-
-function renderTag(keyword,state){
-  bgr.console.log('called!');
-  var div = document.createElement("div");
-  div.className='tagbutton';
-
-  var label = document.createElement('label')
-  label.innerHTML = '<input id="'+keyword+'" type="checkbox" hidden/><span>'+keyword+'</span>';
-  
-  label.addEventListener('click',function(){
-     chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
-      bgr.isBookmarked(tabs[0].url, function(id){
-        if(id){
-          bgr.updateTagStatus(id,keyword,document.getElementById(keyword).checked)
-        }
-      });
-    });
+    showtags(newbookmark.id)
   });
-
-  div.appendChild(label)
-  document.getElementById('tags').appendChild(div);
-
-  if(state === 'on'){ document.getElementById(keyword).checked = true }
 }
