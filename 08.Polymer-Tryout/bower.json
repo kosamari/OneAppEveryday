@@ -1,0 +1,9 @@
+{
+  "name": "google-map polymer test",
+  "version": "1.0.0",
+
+  "dependencies": {
+    "polymer-polymer": "*",
+    "google-map": "*"
+  }
+}

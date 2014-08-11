@@ -1,0 +1,54 @@
+  <html>
+    <head>
+      <script src="bower_components/platform/platform.js"></script>
+      <link rel="import" href="bower_components/google-map/google-map.html">
+      <link rel="import" href="bower_components/google-map/google-map-directions.html">
+      <style type="text/css">
+      google-map{
+        margin: 50px 50px;
+        width:500px;
+        height:300px;
+      }
+      #menu{
+        margin-left: 50px; 
+      }
+      </style>
+    </head>
+
+    <body>
+    <div id="menu">
+      FROM : 
+      <select id="from">
+        <option>New York</option>
+        <option>Chicago</option>
+        <option>San Francisco</option>
+      </select>
+      TO : 
+        <select id="to">
+          <option>New York</option>
+          <option>Chicago</option>
+          <option>San Francisco</option>
+        </select>
+      <input type="button" name="submit" value="submit" id="submit"/>
+    </div>
+    
+  <div style="width:500px">
+    <google-map latitude="40.7345024" longitude="-74.0354671" zoom="9" fit></google-map>
+    <google-map-directions></google-map-directions>
+</div>
+    <script>
+      var gmap = document.querySelector('google-map');
+      gmap.addEventListener('api-load', function(e) {
+        document.querySelector('google-map-directions').map = this.map;
+      });
+
+      document.getElementById('submit').addEventListener('click',function(){
+        var from = document.getElementById('from').value
+        var to = document.getElementById('to').value
+        document.querySelector('google-map-directions').startAddress = from;
+        document.querySelector('google-map-directions').endAddress = to;
+      })
+    </script>
+
+    </body>
+</html>
