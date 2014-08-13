@@ -17,6 +17,7 @@
 
   <script src="../bower_components/d3/d3.min.js"></script>
   <script>
+  
   function barchart(element,data,color){
 
     var data = JSON.parse(data)
@@ -37,8 +38,11 @@
         .text(function(d) { return d; });
   }
 
+
   Polymer('bar-chart', {
-    data: null,
+    created: function(){
+      this.data = null;
+    },
     color: '#F88F1C',
     observe:{
       data :'draw'
