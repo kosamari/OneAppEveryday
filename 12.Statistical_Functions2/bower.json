@@ -1,0 +1,7 @@
+{
+  "name": "bar-chart polymer test",
+  "version": "1.0.0",
+  "dependencies": {
+    "underscore": "*"
+  }
+}
