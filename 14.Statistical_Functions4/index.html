@@ -1,0 +1,27 @@
+<html>
+  <head>
+    <script src="bower_components/underscore/underscore.js"></script>
+    <script src="stat.js"></script>
+    <script type="text/javascript">
+    window.onload = function(){
+      document.getElementById("btn").addEventListener('click', function(){
+        var val = document.getElementById('num').value;
+        var summaryObj = summary(JSON.parse('['+val+']'))
+        _.each(summaryObj,function(data,key){
+          var li = document.createElement('li');
+          li.innerHTML = key+' : '+data;
+          document.getElementById("list").appendChild(li);
+        })
+
+      });
+    }
+
+    </script>
+  </head>
+  <body>
+  <input type="text" name="num" id="num"><input type="button" id="btn" value="run">
+
+  <ul id="list"></ul>
+
+  </body>
+</html>
