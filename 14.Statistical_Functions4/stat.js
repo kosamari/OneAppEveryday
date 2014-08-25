@@ -108,6 +108,5 @@ function cov(xdata,ydata){
 }
 
 function vari(data){
- console.log(data)
   return sum(pow(sbtr(data,mean(data)),2))/(data.length-1)
 }
