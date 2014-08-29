@@ -7,5 +7,5 @@ Challenge to start making things everyday.
 - August 4th : Gist List
 - August 5th : Chrome Bookmark Extention
 
-// in need of backlog update
+// in need of backlog update  
 // projects to update extention, statistical math library, image color picker update
