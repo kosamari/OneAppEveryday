@@ -8,3 +8,4 @@ Challenge to start making things everyday.
 - August 5th : Chrome Bookmark Extention
 
 // in need of backlog update
+// projects to update extention, statistical math library, image color picker update
