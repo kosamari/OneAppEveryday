@@ -3,37 +3,43 @@
   <head>
     <script type="text/javascript" src="bower_components/d3/d3.min.js"></script>
     <style type="text/css">
-    path {
-      fill-rule: evenodd;
-      fill: #aaa;
-      fill-opacity: .7;
-      stroke: #666;
-      stroke-width: 1.5px;
+    path.overlay {
+      fill: orange;
     }
-    svg{
-      background-color: red;
+    path.base{
+      fill: #f3f3f3;
     }
     </style>
   </head>
   <body>
     <script type="text/javascript">
- 
+
     var w = 1920,
         h = w*0.5625, // 16:9 aspect ratio
         x = d3.scale.ordinal().domain(d3.range(5)).rangePoints([0, w], 0),
         r = 2 * Math.PI
 
     var fields = [
-      {name: "hours", value: 0, size: 12,valuea: 0},
-      {name: "minutes", value: 0, size: 60,valuea: 0},
-      {name: "seconds", value: 0, size: 60,valuea: 0}
+      {name: "hours", value: 0, size: 12},
+      {name: "minutes", value: 0, size: 60},
+      {name: "seconds", value: 0, size: 60}
     ];
 
     var arc = d3.svg.arc()
         .innerRadius(w/12)
         .outerRadius(w/12*1.15)
         .startAngle(0)
-        .endAngle(function(d) { return (d.value / d.size) * 2 * Math.PI; });
+        .endAngle(function(d) {
+          return (d.value / d.size) * r; 
+        });
+
+    var basearc = d3.svg.arc()
+        .innerRadius(w/12)
+        .outerRadius(w/12*1.15)
+        .startAngle(0)
+        .endAngle(function(d) {
+          return 1 * r; 
+        });
      
     var svg = d3.select("body").append("svg")
         .attr("width", w)
@@ -41,26 +47,29 @@
       .append("g")
         .attr("transform", "translate( 0," + (h / 2) + ")");
 
+    var base = svg.selectAll(".base")
+          .data(fields);
+
+    base.enter().append("path")
+      .attr("transform", function(d, i) {return "translate(" + x(i+1) + ",0)"; })
+      .attr("class",'base')
+      .attr("d",basearc)
+
+
     setInterval(function() {
+
       var now = new Date();
 
       fields[0].previous = fields[0].value; fields[0].value = changeto12(now.getHours());
       fields[1].previous = fields[1].value; fields[1].value = now.getMinutes();
       fields[2].previous = fields[2].value; fields[2].value = now.getSeconds();
-
-      fields[2].endAngle = (fields[2].previous / fields[2].size) * r
-      fields[2].newAngle = (fields[2].value / fields[2].size) * r
       
-      function changeto12(num){
-        if(num>12){
-          return num-12;
-        }
-      }
-      var path = svg.selectAll("path")
+      var path = svg.selectAll(".overlay")
           .data(fields);
 
       path.enter().append("path")
           .attr("transform", function(d, i) {return "translate(" + x(i+1) + ",0)"; })
+          .attr("class",'overlay')
         .transition()
           .duration(1000)
           .attrTween("d", arcTween);
@@ -68,23 +77,18 @@
       path.transition()
           .duration(1000)
           .attrTween("d", arcTween);
-     
-      // path.exit().transition()
-      //     // .duration(1000)
-      //     // .attrTween("d", arcTween)
-      //     .remove();
-     
-    }, 1000);
-     
-    // function arcTween(b){
-    //   var i = d3.interpolate(b.endAngle, b.newAngle)
-    //   return function(t){
-    //     console.log(b)
-    //     return arc(b)
-    //   }
-    // }
 
-    function arcTween(b) {
+    }, 1000);
+
+
+    function changeto12(num){
+        if(num>12){return num-12;}
+        return num
+      }
+
+    function arcTween(b,i) {
+      if(b.value == 0) {b.value = b.size}
+
       var i = d3.interpolate({value: b.previous}, b);
       return function(t) {
         return arc(i(t));
