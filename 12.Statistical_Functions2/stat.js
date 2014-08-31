@@ -74,3 +74,5 @@ function mad(data){
 
   return median(array)* 1.4826
 }
+
+//add mode
