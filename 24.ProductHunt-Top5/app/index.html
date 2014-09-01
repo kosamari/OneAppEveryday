@@ -1,0 +1,95 @@
+<html>
+  <head>
+  <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+  <style type="text/css">
+  @import url(http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700);
+
+  body{
+    margin: 0px;
+    font-family: "Open Sans";
+    color: #6f6f6f;
+  }
+
+  #container{
+    width:80%;
+    min-width: 550px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+  .post{
+    width:auto;
+    margin: 10px;
+    height: 80px;
+    background-color: #FDF7EA;
+  }
+  .votes{
+    width:20%;
+    height:80px;
+    line-height: 80px;
+    font-size: 26px;
+    text-align: center;
+    float:left;
+  }
+  .title{
+    width:80%;
+    height:50px;
+    line-height: 50px;
+    font-size: 28px;
+    font-weight:600;
+    float:left;
+  }
+  .description{
+    width:80%;
+    font-size: 14px;
+    font-weight:400;
+    float:left;
+  }
+  a{
+    text-decoration: none;
+    color:#da552f;
+  }
+  </style>
+    <script>
+    var spawn = require('child_process').spawn;
+    var $ = require('jquery');
+    var _ = require('underscore');
+
+    var command = "phantomjs";
+    var jobs = ['phantom_scraper.js'];
+    var ph = spawn(command, jobs);
+    var dataset;
+
+    ph.stdout.setEncoding('utf8');
+    ph.stdout.on('data', function (data) {
+      dataset = JSON.parse(data);
+    });
+
+    ph.stderr.setEncoding('utf8');
+    ph.stderr.on('data', function (data) {
+      // console.log('err : '+data);
+    });
+
+    ph.on('exit', function (code) {
+      console.log('exit (' + code +')');
+      render();
+    });
+
+    function render(){
+      var temp = _.template('<div class="post"><div class="votes"><%= upvote %></div><div class="title"><a href="<%= url %>"><%= title %></a></div><div class="description"><%= description %></div></div>');
+
+      _.each(dataset, function(d, i){
+        if(i>=5){return}
+        $("#container").append(temp({
+          upvote:d.upvote,
+          url:d.url,
+          title:d.title,
+          description:d.description
+        }));
+      })
+    }
+    </script>
+  </head>
+  <body>
+    <div id="container"></div>
+  </body>
+</html>

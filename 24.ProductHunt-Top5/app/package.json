@@ -1,0 +1,11 @@
+{
+  "name": "web-scrape-app",
+  "main" : "index.html",
+  "scripts" :{
+    "start" :"../node_modules/nodewebkit/bin/nodewebkit"
+  },
+  "window": {
+      "title" : "Current Top 5 from Product Hunt",
+      "toolbar": false
+    }
+}

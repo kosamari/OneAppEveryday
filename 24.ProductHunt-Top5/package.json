@@ -1,0 +1,13 @@
+{
+  "name": "PH-TOP5",
+  "description": "returns top 5 product on Product Hunt",
+  "version": "0.0.1",
+  "author": {
+    "name": "Mariko Kosaka"
+  },
+  "dependencies": {
+     "nodewebkit" : "*",
+     "underscore" : "*",
+     "jquery" : "*"
+  }
+}
