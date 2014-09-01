@@ -1,0 +1,8 @@
+{
+  "name": "weather-polymer",
+  "version": "1.0.0",
+  "dependencies": {
+    "polymer-polymer": "*",
+    "jquery" : "*"
+  }
+}
