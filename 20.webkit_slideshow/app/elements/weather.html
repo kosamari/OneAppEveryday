@@ -1,0 +1,85 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="weather-view" attributes="cityid data width height">
+  <template>
+    <style>
+      #render {
+        font: 20px sans-serif;
+        text-align: center;
+        background-color: #f3f3f3;
+        color: #6f6f6f;
+        padding: 3px;
+        width:{{width}}px;
+        height:{{height}}px;
+      }
+      #weather{
+        color: #2279bd;
+        font-size: 30px;
+      }
+      #name{
+        color: #f58f2c;
+        font-size: 30px;
+      }
+      #list{
+        margin: 0px;
+      }
+      ul{
+        list-style-type: none;
+        padding-left:0px; 
+      }
+
+      li:nth-child(odd){
+        font-size: 60px;
+      }
+      li:nth-child(even){
+        font-size: 20px;
+        margin-bottom:20px 
+      }
+      .mark{
+        font-size: 40px;
+      }
+
+    </style>
+    <div id="render">
+      <p>It's <span id="weather">{{data.weather}}</span> in <span id="name">{{data.name}}</span></p>
+      <p id="list">
+      <ul>
+        <li class="num">{{data.temp}}<span class="mark">&deg;C</span></li>
+        <li class="label">temperature</li>
+        <li class="num">{{data.humidity}}<span class="mark">%</span></li>
+        <li class="label">humidity</li>
+      </ul>
+    </div>
+  </template>
+
+  <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+  <script>
+  Polymer('weather-view', {
+    created: function(){
+      this.cityid = null;
+      this.width = 600;
+      this.height = 300;
+      this.data = {
+        temp:null,
+        humidity:null,
+        weather:null,
+        name:null,
+      };
+    },
+    observe:{
+      cityid :'render'
+    },
+    render: function(){
+      var _this = this;
+      var url = 'http://api.openweathermap.org/data/2.5/weather?id=' + this.cityid;
+      $.get( url, function( d ) {
+        console.log(d)
+        _this.data.weather = d.weather[0].description;
+        _this.data.name = d.name;
+        _this.data.temp = Math.round(d.main.temp)/10;
+        _this.data.humidity = d.main.humidity;
+      });
+    }
+  });
+  </script>
+</polymer-element>

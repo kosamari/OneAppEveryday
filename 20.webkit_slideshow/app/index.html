@@ -1,0 +1,63 @@
+<html>
+  <head>
+    <script src="bower_components/platform/platform.js"></script>
+    <script src="../bower_components/platform/platform.js"></script>
+    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+    <link rel="import" href="elements/weather.html">
+    <link rel="import" href="elements/bar-chart.html">
+    <link rel="import" href="elements/pie-chart.html">
+    <style type="text/css">
+      body{
+        margin: 0px;
+      }
+    </style>
+  </head>
+  <body>
+  WELCOME!
+  <!-- <bar-chart data="[4,5,6,8,10,50,34]" color="#006DB8" width="600" height="300" margin="1"></bar-chart> -->
+  <!-- <pie-chart data="[4,5,6,8,10,50,34]" width="600" height="300"></pie-chart> -->
+    <script>
+      var el = [
+        {
+          type:'page',
+          tag :'<weather-view cityid="5128581" width="600" height="300"></weather-view>'
+        },
+        {
+          type:'chart',
+          element : 'bar-chart',
+          tag:'<bar-chart data="[]" color="" width="600" height="300" margin="1"></bar-chart>'
+        },
+        {
+          type:'chart',
+          element : 'pie-chart',
+          tag:'<pie-chart data="[]" width="600" height="300"></pie-chart>'
+        }
+      ]
+      var l = 0;
+      var color = ['#f58f2c','#24afe3','#1ea14e','#c1da4e','#c23593','#61297f','#2279bd','#f8b832','#ed4038','#e47d2c']
+
+      setInterval(function(){
+        if(l>=el.length){l=0}
+        document.body.innerHTML = el[l].tag;
+        if(el[l].type === 'chart'){
+          var array = [];
+          for(i=0;i<7;i++){
+            var num = Math.floor((Math.random() * 100) + 1)
+            array.push(num);
+          }
+          $(el[l].element).attr( 'data', '['+String(array)+']' )
+        }
+        if(el[l].element ==='bar-chart'){
+          var i = Math.floor((Math.random() * 10) + 1)
+          $(el[l].element).attr( 'color', color[i] )
+        }
+        if(el[l].element ==='pie-chart'){
+          var i = Math.floor((Math.random() * 10) + 1)
+          $(el[l].element).attr( 'color', color[i] )
+        }
+        l++;
+      },5000);
+
+    </script>
+  </body>
+</html>

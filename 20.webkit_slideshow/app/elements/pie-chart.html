@@ -1,0 +1,75 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="pie-chart" attributes="data color width height">
+  <template>
+    <style>
+      #chart{
+        font: 10px sans-serif;
+        width:{{width}};
+        height:{{height}}
+      }
+    </style>
+    <div id="chart"></div>
+  </template>
+
+  <script src="../../bower_components/d3/d3.min.js"></script>
+  <script>
+  
+  function piechart(element,data,w,h,color){
+    element.innerHTML = '';
+    var width = w,
+        height = h,
+        radius = Math.min(width, height) / 2;
+
+    var arc = d3.svg.arc()
+        .outerRadius(radius - 10)
+        .innerRadius(0);
+
+    var pie = d3.layout.pie()
+        .sort(null)
+        .value(function(d) { return d; });
+
+    var svg = d3.select(element).append("svg")
+        .attr("width", width)
+        .attr("height", height)
+      .append("g")
+        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+      var data = JSON.parse(data)
+
+      var g = svg.selectAll(".arc")
+          .data(pie(data))
+        .enter().append("g")
+          .attr("class", "arc");
+
+      g.append("path")
+          .attr("d", arc)
+          .style("fill", color)
+          .style("stroke",'#ffffff')
+          .style("stroke-width",2)
+
+      // g.append("text")
+      //     .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+      //     .attr("dy", ".35em")
+      //     .style("text-anchor", "middle")
+      //     .text(function(d) { return d.data; });
+  }
+
+
+  Polymer('pie-chart', {
+    created: function(){
+      this.data = null;
+      this.color = "#98abc5";
+    },
+    width: 600,
+    height : 300,
+    observe:{
+      data :'draw',
+      color:'draw'
+    },
+    draw: function(){
+      piechart(this.$.chart, this.data,this.width,this.height,this.color);
+    }
+  });
+  </script>
+</polymer-element>

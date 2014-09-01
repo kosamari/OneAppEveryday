@@ -1,0 +1,9 @@
+{
+  "name": "nw-slideshow",
+  "version": "1.0.0",
+  "dependencies": {
+    "polymer-polymer": "*",
+    "jquery" : "*",
+    "d3" : "*"
+  }
+}
