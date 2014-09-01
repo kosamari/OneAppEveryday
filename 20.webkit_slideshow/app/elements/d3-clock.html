@@ -1,0 +1,198 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="d3-clock" attributes="type width height color">
+  <template>
+    <style>
+      #render {
+        background-color: #ffffff;
+        width:{{width}}px;
+        height:{{height}}px;
+      }
+      path.overlay {
+        fill: {{color}};
+      }
+      path.base{
+        fill: #f3f3f3;
+      }
+      rect.overlay {
+      fill: {{color}};
+      }
+      rect.base{
+        fill: #f3f3f3;
+      }
+    </style>
+    <div id="render"></div>
+  </template>
+
+  <script src="../../bower_components/d3/d3.min.js"></script>
+  <script>
+
+  function circle(element, width, height){
+    var w = width,
+        h = height, // w*0.5625 for 16:9 aspect ratio
+        x = d3.scale.ordinal().domain(d3.range(5)).rangePoints([0, w], 0),
+        r = 2 * Math.PI
+
+    var fields = [
+      {name: "hours", value: 0, size: 12},
+      {name: "minutes", value: 0, size: 60},
+      {name: "seconds", value: 0, size: 60}
+    ];
+
+    var arc = d3.svg.arc()
+        .innerRadius(w/12)
+        .outerRadius(w/12*1.15)
+        .startAngle(0)
+        .endAngle(function(d) {
+          return (d.value / d.size) * r; 
+        });
+
+    var basearc = d3.svg.arc()
+        .innerRadius(w/12)
+        .outerRadius(w/12*1.15)
+        .startAngle(0)
+        .endAngle(function(d) {
+          return 1 * r; 
+        });
+     
+    var svg = d3.select(element).append("svg")
+        .attr("width", w)
+        .attr("height", h)
+      .append("g")
+        .attr("transform", "translate( 0," + (h / 2) + ")");
+
+    var base = svg.selectAll(".base")
+          .data(fields);
+
+    base.enter().append("path")
+      .attr("transform", function(d, i) {return "translate(" + x(i+1) + ",0)"; })
+      .attr("class",'base')
+      .attr("d",basearc)
+
+
+    setInterval(function() {
+
+      var now = new Date();
+
+      fields[0].previous = fields[0].value; fields[0].value = changeto12(now.getHours());
+      fields[1].previous = fields[1].value; fields[1].value = now.getMinutes();
+      fields[2].previous = fields[2].value; fields[2].value = now.getSeconds();
+      
+      var path = svg.selectAll(".overlay")
+          .data(fields);
+
+      path.enter().append("path")
+          .attr("transform", function(d, i) {return "translate(" + x(i+1) + ",0)"; })
+          .attr("class",'overlay')
+        .transition()
+          .duration(1000)
+          .attrTween("d", arcTween);
+
+      path.transition()
+          .duration(1000)
+          .attrTween("d", arcTween);
+
+    }, 1000);
+
+    function arcTween(b,i) {
+      if(b.value == 0) {b.value = b.size}
+      var i = d3.interpolate({value: b.previous}, b);
+      return function(t) {
+        return arc(i(t));
+      };
+    }
+
+  }
+
+  function line (element, width, height){
+    var w = width, //1920
+        h = height, // w*0.5625 for 16:9 aspect ratio
+        lh = w/50, //line height
+        y = d3.scale.ordinal().domain(d3.range(11)).rangePoints([0, h], 0),
+        r = 2 * Math.PI
+
+    var fields = [
+      {name: "hours", value: 0, size: 12},
+      {name: "minutes", value: 0, size: 60},
+      {name: "seconds", value: 0, size: 60}
+    ];
+
+    var arc = d3.svg.arc()
+        .innerRadius(w/12)
+        .outerRadius(w/12*1.15)
+        .startAngle(0)
+        .endAngle(function(d) {
+          return (d.value / d.size) * r; 
+        });
+     
+    var svg = d3.select(element).append("svg")
+        .attr("width", w)
+        .attr("height", h)
+      .append("g");
+
+    var base = svg.selectAll(".base")
+          .data(fields);
+
+    base.enter().append("rect")
+      .attr("transform", function(d,i){return "translate( 0," + (y(i+4)-(lh/2)) + ")"})
+      .attr("class",'base')
+      .attr("width",w)
+      .attr("height", lh)
+
+
+    setInterval(function() {
+
+      var now = new Date();
+
+      fields[0].previous = fields[0].value; fields[0].value = changeto12(now.getHours());
+      fields[1].previous = fields[1].value; fields[1].value = now.getMinutes();
+      fields[2].previous = fields[2].value; fields[2].value = now.getSeconds();
+      
+      var path = svg.selectAll(".overlay")
+          .data(fields);
+
+      path.enter().append("rect")
+          .attr("transform", function(d,i){return "translate( 0," + (y(i+4)-(lh/2)) + ")"})
+          .attr("class",'overlay')
+          .attr("width",0)
+          .attr("height", lh)
+        .transition()
+          .duration(1000)
+          .attr("width", function(d,i){return w*(d.value/d.size)})
+
+      path.transition()
+          .duration(1000)
+          .attr("width", function(d,i){
+            if(d.value === 0) {d.value = d.size}
+            return w*(d.value/d.size)
+          });
+
+    }, 1000);
+  }
+
+  function changeto12(num){
+    if(num>12){return num-12;}
+    return num
+  }
+
+  Polymer('d3-clock', {
+    created: function(){
+      this.type = null;
+      this.width = 600;
+      this.height = 300;
+      this.color = 'orange';
+    },
+    observe:{
+      type :'render',
+      color : 'render'
+    },
+    render: function(){
+      if(this.type === 'circle'){
+        circle(this.$.render,this.width,this.height)
+      }else{
+        line(this.$.render,this.width,this.height)
+      }
+    }
+  });
+  </script>
+</polymer-element>

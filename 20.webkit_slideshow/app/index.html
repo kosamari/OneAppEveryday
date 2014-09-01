@@ -6,6 +6,7 @@
     <link rel="import" href="elements/weather.html">
     <link rel="import" href="elements/bar-chart.html">
     <link rel="import" href="elements/pie-chart.html">
+    <link rel="import" href="elements/d3-clock.html">
     <style type="text/css">
       body{
         margin: 0px;
@@ -13,9 +14,7 @@
     </style>
   </head>
   <body>
-  WELCOME!
-  <!-- <bar-chart data="[4,5,6,8,10,50,34]" color="#006DB8" width="600" height="300" margin="1"></bar-chart> -->
-  <!-- <pie-chart data="[4,5,6,8,10,50,34]" width="600" height="300"></pie-chart> -->
+    <d3-clock type="circle" width="600" height="300"></d3-clock>
     <script>
       var el = [
         {
@@ -23,9 +22,19 @@
           tag :'<weather-view cityid="5128581" width="600" height="300"></weather-view>'
         },
         {
+          type:'clock',
+          element:'d3-clock',
+          tag :'<d3-clock type="line" width="600" height="300"></d3-clock>'
+        },
+        {
           type:'chart',
           element : 'bar-chart',
           tag:'<bar-chart data="[]" color="" width="600" height="300" margin="1"></bar-chart>'
+        },
+        {
+          type:'clock',
+          element:'d3-clock',
+          tag:'<d3-clock type="circle" width="600" height="300"></d3-clock>'
         },
         {
           type:'chart',
@@ -55,8 +64,12 @@
           var i = Math.floor((Math.random() * 10) + 1)
           $(el[l].element).attr( 'color', color[i] )
         }
+        if(el[l].type==='clock'){
+          var i = Math.floor((Math.random() * 10) + 1)
+          $(el[l].element).attr( 'color', color[i] )
+        }
         l++;
-      },5000);
+      },10000);
 
     </script>
   </body>

@@ -73,7 +73,6 @@
       var _this = this;
       var url = 'http://api.openweathermap.org/data/2.5/weather?id=' + this.cityid;
       $.get( url, function( d ) {
-        console.log(d)
         _this.data.weather = d.weather[0].description;
         _this.data.name = d.name;
         _this.data.temp = Math.round(d.main.temp)/10;
