@@ -1,0 +1,12 @@
+{
+  "name": "NodeWebScraper",
+  "description": "scrape test",
+  "version": "0.0.1",
+  "author": {
+    "name": "Mariko Kosaka"
+  },
+  "dependencies": {
+    "request" : "*",
+    "cheerio" : "*"
+  }
+}
