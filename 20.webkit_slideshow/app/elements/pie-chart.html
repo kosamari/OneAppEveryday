@@ -43,16 +43,24 @@
           .attr("class", "arc");
 
       g.append("path")
-          .attr("d", arc)
           .style("fill", color)
           .style("stroke",'#ffffff')
           .style("stroke-width",2)
+          .transition()
+            .duration(1000)
+            .attrTween("d", tweenPie)
 
       // g.append("text")
       //     .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
       //     .attr("dy", ".35em")
       //     .style("text-anchor", "middle")
       //     .text(function(d) { return d.data; });
+
+      function tweenPie(b) {
+        b.innerRadius = 0;
+        var i = d3.interpolate({startAngle: 0, endAngle: 0}, b);
+        return function(t) { return arc(i(t)); };
+      }
   }
 
 
