@@ -1,0 +1,46 @@
+<html>
+  <head>
+  <script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+  <style type="text/css">
+  body{
+    margin: 0px;
+  }
+  </style>
+    <script>
+    var scrape = require('./scraper.js');
+    var request = require('request');
+
+    document.addEventListener('DOMContentLoaded',function(){
+      var baseURL = "http://video.pbs.org"
+      var dataset;
+      var l = 0;
+
+      scrape.run(function(data){
+        dataset = data;
+        show()
+      });
+
+      function show(){
+        var url = 'http://vimeo.com/api/oembed.json?url=http://vimeo.com/'+dataset[l];
+        $.get( url, function( data ) {
+          console.log(data)
+          var duration = data.duration;
+          document.body.innerHTML = '<iframe id="player" src="http://vimeo.com/moogaloop.swf?clip_id='+dataset[l]+'&autoplay=1" width="100%" height="100%" border="none"></iframe>';
+          var iframe = document.getElementById('player')
+          l= l+1;
+          iframe.onload = function(){
+            timer(duration*1000);
+          }
+        });
+      }
+
+      function timer(t){
+        window.setTimeout(function(){
+          show();
+        },t);
+      }
+    });
+    </script>
+  </head>
+  <body></body>
+</html>

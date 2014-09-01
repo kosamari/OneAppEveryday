@@ -1,0 +1,14 @@
+{
+  "name": "web-scrape-app",
+  "main" : "index.html",
+  "scripts" :{
+    "start" :"../node_modules/nodewebkit/bin/nodewebkit"
+  },
+  "webkit": {
+    "plugin": true
+  },
+  "window": {
+      "title" : "VimeoViewer",
+      "toolbar": false
+    }
+}
