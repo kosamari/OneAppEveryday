@@ -1,0 +1,11 @@
+{
+  "name": "Node-EmailParser",
+  "description": "email parsing test",
+  "version": "0.0.1",
+  "author": {
+    "name": "Mariko Kosaka"
+  },
+  "dependencies": {
+    "inbox" : "*"
+  }
+}
