@@ -1,0 +1,11 @@
+{
+  "name": "webkit-v2",
+  "description": "node-webkit slideshow with polymer animation",
+  "version": "0.0.1",
+  "author": {
+    "name": "Mariko Kosaka"
+  },
+  "dependencies": {
+    "nodewebkit" : "*"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "nw-slideshow",
+  "main" : "index.html",
+  "scripts" :{
+    "start" :"../node_modules/nodewebkit/bin/nodewebkit"
+  },
+  "window": {
+      "title" : "Slideshow",
+      "toolbar": false
+    }
+}

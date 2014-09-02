@@ -1,0 +1,70 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="bar-chart" attributes="data width height margin color">
+  <template>
+    <style>
+      #chart {
+        width: {{width}},
+        height:{{height}}
+      }
+      #chart div {
+        font: 10px sans-serif;
+        background-color: {{color}};
+        margin: {{margin}};
+        color: #fff;
+      }
+    </style>
+    <div id="chart"></div>
+  </template>
+
+  <script src="../../bower_components/d3/d3.min.js"></script>
+  <script>
+  
+  function barchart(element,data,color,w,h,m){
+
+    var data = JSON.parse(data)
+
+    var x = d3.scale.linear()
+      .domain([0, d3.max(data)])
+      .range([0, w]);
+
+    //generate hight of an element div
+    var eh = (h-(m*data.length*2))/data.length
+
+    while (element.firstChild) {
+      element.removeChild(element.firstChild);
+    }
+
+
+    d3.select(element)
+      .selectAll("div")
+        .data(data)
+      .enter().append("div")
+        .style("width", 0)
+        .style("height", function(d) { return eh + "px"; })
+      .transition()
+        .duration(1000)
+      .transition()
+        .duration(1000)
+        .style("width", function(d) { return x(d) + "px"; });
+  }
+
+
+  Polymer('bar-chart', {
+    created: function(){
+      this.data = null;
+      this.color = '#F88F1C';
+    },
+    width:600,
+    height:300,
+    margin:1,
+    observe:{
+      data :'draw',
+      color:'draw'
+    },
+    draw: function(){
+      barchart(this.$.chart, this.data,this.color,this.width,this.height,this.margin);
+    }
+  });
+  </script>
+</polymer-element>

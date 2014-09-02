@@ -1,0 +1,10 @@
+{
+  "name": "nw-slideshow",
+  "version": "1.0.0",
+  "dependencies": {
+    "polymer-polymer": "*",
+    "core-animated-pages": "Polymer/core-animated-pages",
+    "jquery" : "*",
+    "d3" : "*"
+  }
+}

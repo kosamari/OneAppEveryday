@@ -1,0 +1,152 @@
+<html>
+  <head>
+    <script src="../bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/platform/platform.js"></script>
+    <script src="../bower_components/platform/platform.js"></script>
+    <link rel="import" href="../bower_components/core-animated-pages/core-animated-pages.html">
+  
+    <link href="../bower_components/core-animated-pages/core-animated-pages.html" rel="import">
+    <link href="../bower_components/core-animated-pages/transitions/slide-from-right.html" rel="import">
+
+    <link rel="import" href="elements/weather.html">
+    <link rel="import" href="elements/bar-chart.html">
+    <link rel="import" href="elements/pie-chart.html">
+    <link rel="import" href="elements/d3-clock.html">
+    <style type="text/css">
+      body {
+        margin: 0;
+      }
+      core-animated-pages {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        overflow: hidden;
+      }
+    </style>
+  </head>
+  <body>
+
+  <core-animated-pages onclick="clicked();" transitions="slide-from-right">
+    <section id="left">
+        
+    </section>
+    <section id="right">
+        
+    </section>
+  </core-animated-pages>
+
+    <script>
+      var up = true;
+      var p = document.querySelector('core-animated-pages');
+      var l = 1;
+      var width = 600;
+      var height = width*0.5625;
+      window.resizeTo(width,height+22)
+
+
+      //elements switch
+      var el = [
+        {
+          type:'clock',
+          element:'d3-clock',
+          tag:'<d3-clock type="circle" width="'+width+'" height="'+height+'"></d3-clock>'
+        },
+        {
+          type:'chart',
+          element : 'bar-chart',
+          tag:'<bar-chart data="[]" color="" width="'+width+'" height="'+height+'" margin="1"></bar-chart>'
+        },
+        {
+          type:'page',
+          element:'weather-view',
+          tag :'<weather-view cityid="5128581" width="'+width+'" height="'+height+'"></weather-view>'
+        },
+        {
+          type:'clock',
+          element:'d3-clock',
+          tag :'<d3-clock type="line" width="'+width+'" height="'+height+'"></d3-clock>'
+        },
+        {
+          type:'chart',
+          element : 'pie-chart',
+          tag:'<pie-chart data="[]" width="'+width+'" height="'+height+'"></pie-chart>'
+        },
+        {
+          type:'page',
+          element:'weather-view',
+          tag :'<weather-view cityid="1850147" width="'+width+'" height="'+height+'"></weather-view>'
+        }
+      ]
+      // city ids
+      // NewYork 5128581
+      // Tokyo 1850147
+      // Austin 5016884
+      
+      var color = ['#f58f2c','#24afe3','#1ea14e','#c1da4e','#c23593','#61297f','#2279bd','#f8b832','#ed4038','#e47d2c']
+
+      $('#left').html(el[0].tag);
+      var run = window.setInterval(function(){ pageslide(); }, 10000);
+      
+      function clicked(){
+        window.clearInterval(run)
+        pageslide();
+        run = window.setInterval(function(){ pageslide(); }, 10000);
+      }
+
+      function pageslide(){
+        if(l>=el.length){l = 0}
+
+        append();
+
+        if(el[l].type === 'chart'){
+          $(el[l].element).attr('color', selectcolor())
+
+          var array = [];
+          for(i=0;i<7;i++){
+            var num = Math.floor((Math.random() * 100) + 1)
+            array.push(num);
+          }
+          $(el[l].element).attr( 'data', '['+String(array)+']' )
+        }
+
+        if(el[l].type==='clock'){
+          $(el[l].element).attr( 'color', selectcolor() )
+        }
+
+        if(el[l].type==='page'){
+          $(el[l].element).attr( 'color', selectcolor() )
+        }
+
+        slide();
+        l++;
+
+        function append(){
+          if(p.selected===0){
+            $('#right').html(el[l].tag);
+          }else{
+            $('#left').html(el[l].tag);
+          }
+        }
+
+        function selectcolor(){
+          var i = Math.floor((Math.random() * 10) + 1)
+          return color[i]
+        }
+
+        // slide annimation
+        function slide() {
+          if (up && p.selected === 1 || !up && p.selected === 0) {
+            up = !up;
+          }
+          if (up) {
+            p.selected += 1;
+          } else {
+            p.selected -= 1;
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

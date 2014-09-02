@@ -1,0 +1,86 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<polymer-element name="pie-chart" attributes="data color width height">
+  <template>
+    <style>
+      #chart{
+        font: 10px sans-serif;
+        width:{{width}};
+        height:{{height}}
+      }
+    </style>
+    <div id="chart"></div>
+  </template>
+
+  <script src="../../bower_components/d3/d3.min.js"></script>
+  <script>
+  
+  function piechart(element,data,w,h,color){
+    element.innerHTML = '';
+    var width = w,
+        height = h,
+        radius = Math.min(width, height) / 2 - 10;
+
+    var arc = d3.svg.arc()
+        .outerRadius(radius);
+
+    var pie = d3.layout.pie()
+        .sort(null)
+        .value(function(d) { return d; });
+
+    var svg = d3.select(element).append("svg")
+        .attr("width", width)
+        .attr("height", height)
+      .append("g")
+        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+      var data = JSON.parse(data)
+
+      var g = svg.selectAll(".arc")
+          .data(pie(data))
+        .enter().append("g")
+          .attr("class", "arc");
+
+      g.append("path")
+          .style("fill", color)
+          .style("stroke",'#ffffff')
+          .style("stroke-width",2)
+        .transition()
+          .duration(1000)
+        .transition()
+          .duration(1000)
+          .attrTween("d", tweenPie)
+        .transition()
+          .duration(1000)
+          .attrTween("d", tweenDonut);
+
+      function tweenPie(b) {
+        b.innerRadius = 0;
+        var i = d3.interpolate({startAngle: 0, endAngle: 0}, b);
+        return function(t) { return arc(i(t)); };
+      }
+      function tweenDonut(b) {
+        b.innerRadius = radius * .6;
+        var i = d3.interpolate({innerRadius: 0}, b);
+        return function(t) { return arc(i(t)); };
+      }
+  }
+
+
+  Polymer('pie-chart', {
+    created: function(){
+      this.data = null;
+      this.color = '#24afe3';
+    },
+    width: 600,
+    height : 300,
+    observe:{
+      data :'draw',
+      color:'draw'
+    },
+    draw: function(){
+      piechart(this.$.chart, this.data,this.width,this.height,this.color);
+    }
+  });
+  </script>
+</polymer-element>
