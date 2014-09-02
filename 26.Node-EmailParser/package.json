@@ -6,6 +6,7 @@
     "name": "Mariko Kosaka"
   },
   "dependencies": {
-    "inbox" : "*"
+    "inbox": "*",
+    "mailparser": "~0.4.6"
   }
 }

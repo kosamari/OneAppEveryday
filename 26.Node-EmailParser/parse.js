@@ -1,5 +1,8 @@
+var fs = require('fs');
 var inbox = require('inbox');
 var config = require('./config.json');
+var MailParser = require("mailparser").MailParser;
+var mailparser = new MailParser();
 
 var imap = inbox.createConnection(
   false, 'imap.gmail.com', {
@@ -20,19 +23,26 @@ imap.on('new', function(message){
   var reader = imap.createMessageStream(message.UID)
   var data = '';
 
-  reader.pipe(process.stdout, {end: false});
+  reader.pipe(fs.createWriteStream('email.eml'), {end: false});
 
   reader.on('data', function(chunk){
     data += chunk;
   })
 
   reader.on('end', function() {
-    var reg = /\<html\>.+?\<\/html\>/;
-    var oneline= data.split('\n').join('');
-    console.log(oneline.match(reg));
+    fs.createReadStream("email.eml").pipe(mailparser);
+    mailparser.on("end", function(mail_object){
+      fs.writeFile('parsed.html', mail_object.html, function(err) {
+        if(err) {console.log(err);}
+        console.log('New Email Parsed');
+      });
+    });
   });
 
 });
 
 imap.connect();
+
+
+
 
