@@ -1,14 +1,11 @@
 {
-  "name": "Vimeo-Player",
-  "description": "vimeo video player",
+  "name": "node-webkit-slideshow",
+  "description": "node-webkit slideshow v1s",
   "version": "0.0.1",
   "author": {
     "name": "Mariko Kosaka"
   },
   "dependencies": {
-    "request" : "*",
-    "cheerio" : "*",
     "nodewebkit" : "*",
-    "xml2js" : "*"
   }
 }
