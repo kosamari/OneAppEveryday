@@ -28,7 +28,7 @@ imap.on('new', function(message){
   reader.on('data', function(chunk){
     data += chunk;
   })
-  //save as email file
+
   reader.on('end', function() {
     fs.createReadStream("email.eml").pipe(mailparser);
     mailparser.on("end", function(mail_object){
