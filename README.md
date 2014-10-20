@@ -1,5 +1,3 @@
-One Application Everyday
-==============
 ## This is an Archive repo
 ### some apps moved to own repo.
 
