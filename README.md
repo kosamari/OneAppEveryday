@@ -1,4 +1,4 @@
-## This is an Archive repo
+## This is an archive repo
 ### some apps moved to own repo.
 
 This was challenge to start making things everyday.  
